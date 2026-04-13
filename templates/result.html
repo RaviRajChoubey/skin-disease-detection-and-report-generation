@@ -1,0 +1,999 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediDiagnose - Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .error {
+            background: #fee;
+            border-left: 4px solid #c33;
+            color: #c33;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .disease-name {
+            font-size: 3em;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 20px 0;
+        }
+        
+        .disease-badge {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: width 0.8s ease;
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        
+        .severity-mild { background: #48bb78; }
+        .severity-moderate { background: #ed8936; }
+        .severity-severe { background: #f56565; }
+        .severity-very-severe { background: #742a2a; }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f7fafc 0%, white 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .metric-card h4 {
+            color: #667eea;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .disclaimer {
+            background: #fffbea;
+            border-left: 4px solid #ed8936;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            font-size: 0.95em;
+            color: #7c6f00;
+        }
+        
+        .disclaimer strong {
+            color: #5c5200;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .cv-section {
+            background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .card { padding: 25px; }
+            .disease-name { font-size: 2em; }
+            .section-title { font-size: 1.4em; }
+            .grid { grid-template-columns: 1fr; }
+            .buttons { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">🏥 Medi<span style="color: #764ba2;">Diagnose</span></div>
+    </div>
+
+    <div class="container">
+        {% if error %}
+        <div class="card">
+            <div class="error">⚠️ {{ error }}</div>
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="window.location.href='/'">Try Again</button>
+            </div>
+        </div>
+        {% elif prediction %}
+        <div class="card">
+            <div class="result-header">
+                <div class="disease-badge" style="background-color: {{ prediction.color }};">✓ Analysis Complete</div>
+                <div class="disease-name">{{ prediction.prediction }}</div>
+                <p style="color: #999; font-size: 1.1em; margin-bottom: 20px;">{{ prediction.description }}</p>
+                
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: {{ prediction.confidence }}%;">
+                        {{ "%.1f"|format(prediction.confidence) }}%
+                    </div>
+                </div>
+                
+                {% if cv_data %}
+                    {% set severity = cv_data.severity_assessment %}
+                    <div class="severity-badge severity-{{ severity.severity_level|lower|replace(' ', '-') }}">
+                        Severity: {{ severity.severity_level }} ({{ "%.1f"|format(severity.overall_severity_score) }}/100)
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <h2 class="section-title">📊 Diagnosis Summary</h2>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h4>Disease</h4>
+                        <div class="metric-value">{{ prediction.prediction }}</div>
+                        <div class="metric-label">Detected Condition</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Confidence</h4>
+                        <div class="metric-value">{{ "%.1f"|format(prediction.confidence) }}%</div>
+                        <div class="metric-label">Prediction Certainty</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Model</h4>
+                        <div class="metric-value">ResNet50</div>
+                        <div class="metric-label">Neural Network</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if cv_data %}
+            <div class="cv-section">
+                <h2 class="section-title">👁️ Computer Vision Analysis</h2>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Color Analysis</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Red</th>
+                            <th>Green</th>
+                            <th>Blue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mean Value</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.red_mean) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.green_mean) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.blue_mean) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Standard Deviation</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.red_std) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.green_std) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.blue_std) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Abnormality Metrics</h3>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h4>Redness Score</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.abnormality_detection.redness_score * 100) }}%</div>
+                        <div class="metric-label">Skin Redness Level</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Inflammation</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.abnormality_detection.inflammation_index) }}</div>
+                        <div class="metric-label">Inflammation Index</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Affected Area</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.abnormality_detection.affected_area_percentage) }}%</div>
+                        <div class="metric-label">Percentage of Skin</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Clinical Assessment</h3>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h4>Severity Score</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.severity_assessment.overall_severity_score) }}/100</div>
+                        <div class="metric-label">Overall Severity</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Classification</h4>
+                        <div class="metric-value">{{ cv_data.severity_assessment.severity_level }}</div>
+                        <div class="metric-label">Severity Level</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Texture Analysis</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.texture_features.image_contrast) }}</div>
+                        <div class="metric-label">Contrast Level</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Shape & Structure</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Solidity</td>
+                            <td>{{ "%.3f"|format(cv_data.morphological_features.solidity) }}</td>
+                            <td>Shape compactness (0-1)</td>
+                        </tr>
+                        <tr>
+                            <td>Circularity</td>
+                            <td>{{ "%.3f"|format(cv_data.morphological_features.circularity) }}</td>
+                            <td>Roundness measure (0-1)</td>
+                        </tr>
+                        <tr>
+                            <td>Edge Density</td>
+                            <td>{{ "%.3f"|format(cv_data.texture_features.edge_density) }}</td>
+                            <td>Detected edges ratio</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Print Report</button>
+                <button class="btn btn-primary" onclick="window.location.href='/'">📤 Analyze Another</button>
+            </div>
+
+            <div class="disclaimer">
+                <strong>⚠️ Important Medical Disclaimer:</strong> This AI-assisted analysis is for informational purposes only. Results should not be used as a substitute for professional medical advice. Always consult qualified healthcare professionals for proper diagnosis and treatment.
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            <p>&copy; 2026 MediDiagnose. Professional Skin Disease Detection System. All Rights Reserved.</p>
+        </div>
+    </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediDiagnose - Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .error {
+            background: #fee;
+            border-left: 4px solid #c33;
+            color: #c33;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .disease-name {
+            font-size: 3em;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 20px 0;
+        }
+        
+        .disease-badge {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: width 0.8s ease;
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        
+        .severity-mild { background: #48bb78; }
+        .severity-moderate { background: #ed8936; }
+        .severity-severe { background: #f56565; }
+        .severity-very-severe { background: #742a2a; }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f7fafc 0%, white 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .metric-card h4 {
+            color: #667eea;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tr:hover { background: #f7fafc; }
+        tr:last-child td { border-bottom: none; }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.6);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .disclaimer {
+            background: #fffbea;
+            border-left: 4px solid #ed8936;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            font-size: 0.95em;
+            color: #7c6f00;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .cv-section {
+            background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .card { padding: 25px; }
+            .disease-name { font-size: 2em; }
+            .section-title { font-size: 1.4em; }
+            .grid { grid-template-columns: 1fr; }
+            .buttons { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">🏥 Medi<span style="color: #764ba2;">Diagnose</span></div>
+    </div>
+
+    <div class="container">
+        {% if error %}
+        <div class="card">
+            <div class="error">⚠️ {{ error }}</div>
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="window.location.href='/'">Try Again</button>
+            </div>
+        </div>
+        {% elif prediction %}
+        <div class="card">
+            <div class="result-header">
+                <div class="disease-badge" style="background-color: {{ prediction.color }};">✓ Analysis Complete</div>
+                <div class="disease-name">{{ prediction.prediction }}</div>
+                <p style="color: #999; font-size: 1.1em; margin-bottom: 20px;">{{ prediction.description }}</p>
+                
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: {{ prediction.confidence }}%;">
+                        {{ "%.1f"|format(prediction.confidence) }}%
+                    </div>
+                </div>
+                
+                {% if cv_data %}
+                    {% set severity = cv_data.severity_assessment %}
+                    <div class="severity-badge severity-{{ severity.severity_level|lower|replace(' ', '-') }}">
+                        Severity: {{ severity.severity_level }} ({{ "%.1f"|format(severity.overall_severity_score) }}/100)
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <h2 class="section-title">📊 Diagnosis Summary</h2>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h4>Disease</h4>
+                        <div class="metric-value">{{ prediction.prediction }}</div>
+                        <div class="metric-label">Detected Condition</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Confidence</h4>
+                        <div class="metric-value">{{ "%.1f"|format(prediction.confidence) }}%</div>
+                        <div class="metric-label">Prediction Certainty</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Model</h4>
+                        <div class="metric-value">ResNet50</div>
+                        <div class="metric-label">Neural Network</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if cv_data %}
+            <div class="cv-section">
+                <h2 class="section-title">👁️ Computer Vision Analysis</h2>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Color Analysis</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Red</th>
+                            <th>Green</th>
+                            <th>Blue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mean Value</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.red_mean) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.green_mean) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.blue_mean) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Standard Deviation</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.red_std) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.green_std) }}</td>
+                            <td>{{ "%.1f"|format(cv_data.color_features.blue_std) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Abnormality Metrics</h3>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h4>Redness Score</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.abnormality_detection.redness_score * 100) }}%</div>
+                        <div class="metric-label">Skin Redness Level</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Inflammation</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.abnormality_detection.inflammation_index) }}</div>
+                        <div class="metric-label">Inflammation Index</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Affected Area</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.abnormality_detection.affected_area_percentage) }}%</div>
+                        <div class="metric-label">Percentage of Skin</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Clinical Assessment</h3>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h4>Severity Score</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.severity_assessment.overall_severity_score) }}/100</div>
+                        <div class="metric-label">Overall Severity</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Classification</h4>
+                        <div class="metric-value">{{ cv_data.severity_assessment.severity_level }}</div>
+                        <div class="metric-label">Severity Level</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Texture Analysis</h4>
+                        <div class="metric-value">{{ "%.1f"|format(cv_data.texture_features.image_contrast) }}</div>
+                        <div class="metric-label">Contrast Level</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #2d3748; margin: 25px 0 15px 0; font-size: 1.3em;">Shape & Structure</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Solidity</td>
+                            <td>{{ "%.3f"|format(cv_data.morphological_features.solidity) }}</td>
+                            <td>Shape compactness (0-1)</td>
+                        </tr>
+                        <tr>
+                            <td>Circularity</td>
+                            <td>{{ "%.3f"|format(cv_data.morphological_features.circularity) }}</td>
+                            <td>Roundness measure (0-1)</td>
+                        </tr>
+                        <tr>
+                            <td>Edge Density</td>
+                            <td>{{ "%.3f"|format(cv_data.texture_features.edge_density) }}</td>
+                            <td>Detected edges ratio</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <div class="buttons">
+                <button class="btn btn-success" id="reportBtn" onclick="handleGenerateReport()">📄 Create Clinical Report</button>
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Print Results</button>
+                <button class="btn btn-primary" onclick="window.location.href='/'">📤 Analyze Another</button>
+            </div>
+
+            <div class="loading" id="reportLoading">
+                <div class="spinner"></div>
+                <p><strong>Generating Clinical Report...</strong></p>
+                <p style="font-size: 0.9em; color: #666;">Please wait while we create your professional clinical report</p>
+            </div>
+
+            <div class="disclaimer">
+                <strong>⚠️ Important Medical Disclaimer:</strong> This AI-assisted analysis is for informational purposes only. Results should not be used as a substitute for professional medical advice. Always consult qualified healthcare professionals for proper diagnosis and treatment.
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            <p>&copy; 2026 MediDiagnose. Professional Skin Disease Detection System. All Rights Reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        function handleGenerateReport() {
+            const btn = document.getElementById('reportBtn');
+            const loading = document.getElementById('reportLoading');
+            
+            try {
+                // Get data from Jinja2 template variables
+                const predictionData = {
+                    prediction: "{{ prediction.prediction }}",
+                    confidence: {{ prediction.confidence }},
+                    color: "{{ prediction.color }}",
+                    description: "{{ prediction.description }}"
+                };
+                
+                const cvData = {
+                    color_features: {
+                        red_mean: {{ cv_data.color_features.red_mean }},
+                        red_std: {{ cv_data.color_features.red_std }},
+                        green_mean: {{ cv_data.color_features.green_mean }},
+                        green_std: {{ cv_data.color_features.green_std }},
+                        blue_mean: {{ cv_data.color_features.blue_mean }},
+                        blue_std: {{ cv_data.color_features.blue_std }}
+                    },
+                    texture_features: {
+                        image_contrast: {{ cv_data.texture_features.image_contrast }},
+                        edge_density: {{ cv_data.texture_features.edge_density }}
+                    },
+                    morphological_features: {
+                        solidity: {{ cv_data.morphological_features.solidity }},
+                        circularity: {{ cv_data.morphological_features.circularity }}
+                    },
+                    abnormality_detection: {
+                        redness_score: {{ cv_data.abnormality_detection.redness_score }},
+                        inflammation_index: {{ cv_data.abnormality_detection.inflammation_index }},
+                        affected_area_percentage: {{ cv_data.abnormality_detection.affected_area_percentage }}
+                    },
+                    severity_assessment: {
+                        overall_severity_score: {{ cv_data.severity_assessment.overall_severity_score }},
+                        severity_level: "{{ cv_data.severity_assessment.severity_level }}"
+                    }
+                };
+                
+                loading.classList.add('active');
+                btn.disabled = true;
+                
+                fetch('/generate_report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prediction: predictionData,
+                        cv_data: cvData
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Report generation failed: ' + response.statusText);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Clinical_Report_' + new Date().toISOString().slice(0, 10) + '.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    loading.classList.remove('active');
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to generate report: ' + error.message);
+                    loading.classList.remove('active');
+                    btn.disabled = false;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing report: ' + error.message);
+                loading.classList.remove('active');
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
